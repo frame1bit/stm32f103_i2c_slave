@@ -26,7 +26,10 @@
     #define DBG( fmt, ...)
 #endif
 
-
+/**
+ * number of WS2812 used 
+*/
+#define CONFIG_LED_NUMBER               (5)
 
 /**
  * set function to STANDBY after power on

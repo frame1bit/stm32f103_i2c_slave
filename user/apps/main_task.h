@@ -7,6 +7,7 @@
 #include "app_event_message.h"
 #include "sys_app.h"
 #include "communication_iface.h"
+#include "ui/led_indicator/led_animation.h"
 
 #define TIMEOUT_SIMULASI_BOOTING        (5000)
 #define TIMEOUT_SIMULASI_BT_PAIR        (2000)

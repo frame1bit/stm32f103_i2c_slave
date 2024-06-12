@@ -434,7 +434,13 @@ void task_network_configuration(void *arg)
             if (fs_comm_get_wifi_status() == FS_WIFI_STATE_DISCONNECTED)
             {
                 /** green blink */
-                /** @removed: indicator */
+                set_visual_mode(LED_EVENT_BLINK);
+                SET_ANIMATION_PROPERTY(dispProp, 
+                                        15,         /** blink speed */
+                                        LED_BRIGHTNESS_DEFAULT,        /** brightness */
+                                        LED_COLOR_NETWORK_DISCONNECTED,    /** color */
+                                        NULL,       /** center color */
+                                        0);         /** blink */
 
                 /** this routine needed when speaker disconnected from access point
                  * so user can still can use spotify & bluetooth mode
@@ -449,7 +455,13 @@ void task_network_configuration(void *arg)
             else if(fs_comm_get_wifi_status() == FS_WIFI_SETUP_MODE)
             {
 
-                /** @removed: indicator */
+                set_visual_mode(LED_EVENT_SETUP_MODE);
+                SET_ANIMATION_PROPERTY(dispProp, 
+                                        15,         /** blink speed */
+                                        LED_BRIGHTNESS_DEFAULT,        /** brightness */
+                                        LED_COLOR_RED,    /** color */
+                                        NULL,       /** center color */
+                                        0);         /** blink */
             }
             pre_wifi_state = fs_comm_get_wifi_status();
             mainTaskState = TASK_STATE_RUN;
@@ -482,7 +494,13 @@ void task_network_configuration(void *arg)
             {
                 /** set task to pause state */
                 mainTaskState = TASK_STATE_WAIT;
-                /** @removed: indicator */
+                set_visual_mode(LED_EVENT_ERROR);
+                SET_ANIMATION_PROPERTY(dispProp, 
+                                        15,                     /** blink speed */
+                                        LED_BRIGHTNESS_DEFAULT,        /** brightness */
+                                        LED_COLOR_RED,      /** color */
+                                        NULL,               /** center color */
+                                        0);                 /** blink */
 
             }
 #endif // CONFIG_NETWORK_ERROR_INDICATOR_ENABLE            
@@ -572,7 +590,7 @@ static void task_factory(void *arg)
             break;
 
         case TASK_STATE_INIT:
-            /** @removed: indicator */
+            set_visual_mode(LED_EVENT_FACTORY_RESET);
 
 #if (CONFIG_ENABLE_NVM)
             /** @removed: nvm */
@@ -643,7 +661,12 @@ void task_standby(void *arg)
             if (system_config.venicex_state == VENICEX_STATE_READY)
             {
                 mainTaskState = TASK_STATE_RUN;
-                /** @removed: indicator */
+                set_visual_mode(LED_EVENT_DYNAMIC_COLOR);
+                SET_ANIMATION_PROPERTY(dispProp, 
+                                    15, 
+                                    60,
+                                    LED_COLOR_WHITE,
+                                    NULL, 0);
             }
 
             break;
@@ -707,7 +730,7 @@ static void task_booting(void *arg)
         case TASK_STATE_INIT:
             mainTaskState = TASK_STATE_RUN;
             /** set indicator for booting process */
-            /** @removed: indicator */
+            set_visual_mode(LED_EVENT_BOOTING);
             system_config.venicex_state = VENICEX_STATE_BOOTING_PROCESS;
             //TimeoutSet(&tmrWifiWaitConn, TIMEOUT_WAIT_CONNECTION);
             break;
@@ -850,6 +873,9 @@ void task_bluetooth_a2dp(void *arg)
 void task_spotify_connect(void *arg)
 {
     EventContext *ev = (EventContext *)(arg);
+    static uint8_t wifi_status = 0;
+
+    wifi_status = fs_comm_get_wifi_status();
 
     do_change_task(&mainTaskState, ev);
 
@@ -875,7 +901,14 @@ void task_spotify_connect(void *arg)
         case TASK_STATE_INIT:
             if (fs_comm_get_wifi_status() == FS_WIFI_STATE_CONNECTED)
             {
-                /** @removed: indicator */
+                led_indicator_set_in_mode(SYS_MODE_SPOTIFY_CONNECT, &wifi_status);
+                set_visual_mode(LED_EVENT_DYNAMIC_COLOR);
+                SET_ANIMATION_PROPERTY(dispProp, 
+                                    15, 
+                                    LED_BRIGHTNESS_DEFAULT,
+                                    LED_COLOR_SPOTIFY,  /* led green spotify */
+                                    NULL, 
+                                    0);     /** no blink */
 
 #if (CONFIG_ROLLING_MODE)
                 if ( IsTimeout(&tmrWaitChangeMode) )
@@ -950,7 +983,9 @@ void (*MainTaskRunState[SYS_MODE_NUM])(void *arg) = {
 */
 void main_task_init(void)
 {
-    
+    /** WS2812 led indicator */
+    led_animation_init();
+
     /** Communication Init */
     communication_iface_init();
 
@@ -963,6 +998,9 @@ void main_task_run(void *arg)
     
     /** handle communication for wifi and bluetooth module */
     communication_fs_handler(&msgSend);
+
+    /** handler led animation */
+    led_animation_handler();
 
     /** running state **/
     (*MainTaskRunState[system_config.current_function])((void*)&msgSend);
