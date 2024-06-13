@@ -22,6 +22,15 @@ extern TIMER tmrVolumeSync;
 /** extern function */
 /** end of extern function */
 
+typedef struct
+{
+    uint8_t red;
+    uint8_t green;
+    uint8_t blue;
+} LED_t;
+
+LED_t led;
+
 /***
  * @brief   update register for read
  */
@@ -139,6 +148,22 @@ static void i2c_communication_process(I2C_Data_t *p)
                 // turn on the led
                 HAL_GPIO_WritePin(USER_LED_GPIO_Port, USER_LED_Pin, 1);
             }
+            break;
+        case REG_AUXILIARY2:
+            // reserved
+            break;
+
+        case REG_LED_RED:
+            led.red = p->data;
+            dispProp.color = RGB_TO_GRB(led.red, led.green, led.blue);
+            break;
+        case REG_LED_GREEN:
+            led.green = p->data;
+            dispProp.color = RGB_TO_GRB(led.red, led.green, led.blue);
+            break;
+        case REG_LED_BLUE:
+            led.blue = p->data;
+            dispProp.color = RGB_TO_GRB(led.red, led.green, led.blue);
             break;
 
         default: break;

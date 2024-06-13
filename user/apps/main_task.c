@@ -901,7 +901,7 @@ void task_spotify_connect(void *arg)
         case TASK_STATE_INIT:
             if (fs_comm_get_wifi_status() == FS_WIFI_STATE_CONNECTED)
             {
-                led_indicator_set_in_mode(SYS_MODE_SPOTIFY_CONNECT, &wifi_status);
+                #if 0
                 set_visual_mode(LED_EVENT_DYNAMIC_COLOR);
                 SET_ANIMATION_PROPERTY(dispProp, 
                                     15, 
@@ -909,7 +909,9 @@ void task_spotify_connect(void *arg)
                                     LED_COLOR_SPOTIFY,  /* led green spotify */
                                     NULL, 
                                     0);     /** no blink */
-
+                #else
+                set_visual_mode(LED_EVENT_STATIC_COLOR);
+                #endif
 #if (CONFIG_ROLLING_MODE)
                 if ( IsTimeout(&tmrWaitChangeMode) )
 #else

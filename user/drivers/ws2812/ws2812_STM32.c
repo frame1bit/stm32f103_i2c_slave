@@ -139,7 +139,7 @@ void ws2812_show(void)
 	HAL_SPI_Transmit(spi, buf_bitLed, sizeBuf, 50);
 	for (uint8_t i = 0; i < 24; i++)
 		HAL_SPI_Transmit(spi, 0, 1, 10);
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);
 }
 
 void clearBuf_led(void)

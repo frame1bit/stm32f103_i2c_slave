@@ -11,6 +11,9 @@
 #include "sys_app.h"
 #include "app_event_message.h"
 
+#include "ui/led_indicator/Animation_Style.h"
+
+
 /** function prototype */
 void communication_iface_init(void);
 int communication_fs_handler(EventContext *ev);

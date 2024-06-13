@@ -28,6 +28,10 @@
 #define REG_AUXILIARY1      0x0A
 #define REG_AUXILIARY2      0x0B
 
+#define REG_LED_RED         0x0C
+#define REG_LED_GREEN       0x0D
+#define REG_LED_BLUE        0x0E
+
 /** key command definition */
 #define KEY_CMD_UNMUTE          0x01
 #define KEY_CMD_MUTE            0x02

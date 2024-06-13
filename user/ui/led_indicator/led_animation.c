@@ -410,7 +410,11 @@ void Draw_Anim(void) /* write animasi */
 
 		case LED_EVENT_BT_BROADCAST:
 			cp_set_dynamic_color();
-			//cp_set_single_color_brightness(static_color);
+			
+			break;
+
+		case LED_EVENT_STATIC_COLOR:
+			cp_set_single_color_brightness(dispProp.color);
 			break;
 
 		/**
